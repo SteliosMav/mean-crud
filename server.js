@@ -6,6 +6,8 @@ const postsRoutes = require("./backend/routes/posts");
 
 const app = express();
 
+require("dotenv").config();
+
 mongoose
   .connect(
     "mongodb+srv://stelios:N6GvTOnXjVUO07iM@cluster0.zn5oj.mongodb.net/mean-crud?retryWrites=true&w=majority"

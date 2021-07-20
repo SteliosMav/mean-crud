@@ -1,6 +1,7 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+
 import { Subscription } from 'rxjs';
+
 import { Post } from '../post.model';
 import { PostService } from '../post.service';
 
@@ -10,7 +11,7 @@ import { PostService } from '../post.service';
   styleUrls: ['./post-list.component.scss'],
 })
 export class PostListComponent implements OnInit, OnDestroy {
-  constructor(private postService: PostService, private router: Router) {}
+  constructor(private postService: PostService) {}
 
   public posts: Post[] = [];
 
