@@ -1,32 +1,31 @@
 const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+
+const postsRoutes = require("./backend/routes/posts");
+
 const app = express();
+
+mongoose
+  .connect(
+    "mongodb+srv://stelios:N6GvTOnXjVUO07iM@cluster0.zn5oj.mongodb.net/mean-crud?retryWrites=true&w=majority"
+  )
+  .then(() => {
+    console.log("Connected to database");
+  })
+  .catch(() => {
+    console.log("Connection failed");
+  });
+
 const port = process.env.PORT || 3000;
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
-app.get("/api/users", (req, res) => {
-  res.json({
-    users: [
-      {
-        name: "Tomas",
-        age: 27,
-        country: "Germany",
-      },
-    ],
-  });
-});
+app.use(cors());
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use("/api/posts", postsRoutes);
 
 app.listen(port, () => {
-  console.log("It works..?");
+  console.log(`Listening on port: ${port}..`);
 });
-
-// const http = require("http");
-
-// const hostname = "localhost";
-// const port = 3000;
-
-// const server = http.createServer((req, res) => {
-//   res.statusCode = 200;
-//   res.setHeader;
-// });

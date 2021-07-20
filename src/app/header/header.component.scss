@@ -1,0 +1,15 @@
+a {
+  cursor: pointer;
+  text-decoration: none;
+  color: aliceblue;
+}
+ul {
+  list-style: none;
+  display: flex;
+}
+ul li a {
+  margin-right: 1rem;
+}
+.spacer {
+  width: 100%;
+}
