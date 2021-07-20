@@ -65,19 +65,19 @@ router.delete("/:id", (req, res) => {
 });
 
 router.get("/:id", (req, res) => {
-  Post.findById(req.params.id).then((post) => {
-    if (post) {
+  Post.findById(req.params.id)
+    .then((post) => {
       res.status(200).json({
         message: "Post was found successfully",
         post,
       });
-    } else {
-      res.status(404).json({
+    })
+    .catch((result) => {
+      res.status(400).json({
         message: "Post was not found",
-        error: err,
+        result: result,
       });
-    }
-  });
+    });
 });
 
 module.exports = router;

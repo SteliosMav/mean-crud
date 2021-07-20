@@ -1,9 +1,11 @@
-import { Component, OnInit, Output, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+
+import { Subscription } from 'rxjs';
+
 import { Post } from '../post.model';
 import { PostService } from '../post.service';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-post-create',
@@ -13,8 +15,7 @@ import { Subscription } from 'rxjs';
 export class PostsCreateComponent implements OnInit, OnDestroy {
   constructor(
     private postService: PostService,
-    private route: ActivatedRoute,
-    private router: Router
+    private route: ActivatedRoute
   ) {}
 
   public post: Post = {
@@ -43,6 +44,7 @@ export class PostsCreateComponent implements OnInit, OnDestroy {
             this.isLoading = false;
           },
           (err) => {
+            console.log(err.error.message);
             this.isLoading = false;
           }
         );
@@ -54,8 +56,8 @@ export class PostsCreateComponent implements OnInit, OnDestroy {
     if (form.invalid) {
       return;
     }
-    this.isLoading = true;
     this.post = form.form.value;
+    this.isLoading = true;
     if (this.params === '') {
       this.postService.addPost(this.post);
     } else {
@@ -68,7 +70,7 @@ export class PostsCreateComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.checkEdit();
   }
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.checkParamsSubscription.unsubscribe();
   }
 }

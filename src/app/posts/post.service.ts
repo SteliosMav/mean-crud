@@ -1,12 +1,14 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+
 import { Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { Post } from './post.model';
 
 @Injectable({ providedIn: 'root' })
-export class PostService implements OnInit, OnDestroy {
+export class PostService {
   constructor(private http: HttpClient, private router: Router) {}
 
   private posts: Post[] = [];
@@ -54,7 +56,7 @@ export class PostService implements OnInit, OnDestroy {
   // }
 
   updatePost(post: Post) {
-    this.http.put<{ post: Post }>(`${this.url}${post.id}`, post).subscribe(
+    this.http.put<void>(`${this.url}${post.id}`, post).subscribe(
       (result) => {
         this.router.navigate(['/']);
       },
@@ -79,7 +81,4 @@ export class PostService implements OnInit, OnDestroy {
   getPostsUpdatedListener() {
     return this.postsUpdated.asObservable();
   }
-
-  ngOnInit() {}
-  ngOnDestroy() {}
 }
