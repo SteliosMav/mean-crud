@@ -1,9 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { select, Store } from '@ngrx/store';
 
-import { Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
+import { deletePost } from 'src/app/posts/post-list/store/actions';
 
 import { Post } from '../post.model';
 import { PostService } from '../post.service';
+import { selectAllPosts } from './store/selectors';
 
 @Component({
   selector: 'app-post-list',
@@ -11,35 +14,23 @@ import { PostService } from '../post.service';
   styleUrls: ['./post-list.component.scss'],
 })
 export class PostListComponent implements OnInit, OnDestroy {
-  constructor(private postService: PostService) {}
+  constructor(private postService: PostService, private store: Store) {}
 
-  public posts: Post[] = [];
+  public posts$: Observable<Post[]>;
 
-  public isLoading = false;
-
-  private postsUpdatedSubscription: Subscription;
+  public postsExist: boolean;
 
   onDelete(id: string) {
-    this.postService.deletePost(id);
+    this.store.dispatch(deletePost({ id }));
+  }
+
+  private reload() {
+    this.posts$ = this.store.pipe(select(selectAllPosts));
   }
 
   ngOnInit(): void {
-    this.isLoading = true;
-    this.postService.getPosts();
-    this.postsUpdatedSubscription = this.postService
-      .getPostsUpdatedListener()
-      .subscribe(
-        (newPosts: Post[]) => {
-          this.posts = newPosts;
-          this.isLoading = false;
-        },
-        (err) => {
-          this.isLoading = false;
-        }
-      );
+    this.reload();
   }
 
-  ngOnDestroy() {
-    this.postsUpdatedSubscription.unsubscribe();
-  }
+  ngOnDestroy() {}
 }
