@@ -16,6 +16,13 @@ import { PostsCreateComponent } from './posts/post-create/post-create.component'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './header/header.component';
 import { PostListComponent } from './posts/post-list/post-list.component';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
+import { postReducer } from './posts/post-list/store/reducers';
+import { EffectsModule } from '@ngrx/effects';
+import { postsEffects } from './posts/post-list/store/effects';
+import { PostsResolver } from './posts/post-list/post-list.resolver';
 
 @NgModule({
   declarations: [
@@ -37,8 +44,24 @@ import { PostListComponent } from './posts/post-list/post-list.component';
     MatExpansionModule,
     HttpClientModule,
     AppRoutingModule,
+    StoreModule.forRoot(
+      { posts: postReducer },
+      {
+        runtimeChecks: {
+          strictStateImmutability: true,
+          strictActionImmutability: true,
+          strictActionSerializability: true,
+          strictStateSerializability: true,
+        },
+      }
+    ),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+      logOnly: environment.production,
+    }),
+    EffectsModule.forRoot([postsEffects]),
   ],
-  providers: [],
+  providers: [PostsResolver],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

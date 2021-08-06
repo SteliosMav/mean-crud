@@ -1,49 +1,38 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, OnDestroy, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AppState } from './post-list/store/reducers';
 
 import { Post } from './post.model';
 
 @Injectable({ providedIn: 'root' })
 export class PostService {
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient) {}
 
   private posts: Post[] = [];
   private url: string = 'http://localhost:3000/api/posts/';
 
   private postsUpdated = new Subject<Post[]>();
 
-  getPosts(): void {
-    this.http
-      .get<{ message: string; posts: Post[] }>(this.url)
-      .pipe(
-        map((resData): Post[] => {
-          return resData.posts.map((post: Post): Post => {
-            return {
-              title: post.title,
-              content: post.content,
-              id: post._id,
-            };
-          });
-        })
-      )
-      .subscribe((posts: Post[]) => {
-        this.posts = posts;
-        this.postsUpdated.next([...this.posts]);
-      });
+  getPosts() {
+    return this.http.get<{ message: string; posts: Post[] }>(this.url).pipe(
+      map((resData): Post[] => {
+        return resData.posts.map((post: Post): Post => {
+          return {
+            title: post.title,
+            content: post.content,
+            id: post._id,
+          };
+        });
+      })
+    );
   }
-  addPost(post: Post): void {
-    this.http
-      .post<{ message: string; post: Post }>(this.url, post)
-      .subscribe((resData) => {
-        post.id = resData.post.id;
-        this.posts.push(post);
-        this.postsUpdated.next([...this.posts]);
-        this.router.navigate(['/']);
-      });
+  addPost(post: Post) {
+    return this.http.post<{ message: string; post: Post }>(this.url, post);
   }
   getPost(id: string): Observable<{ message: string; post: Post }> {
     return this.http.get<{ message: string; post: Post }>(this.url + id);
@@ -55,27 +44,12 @@ export class PostService {
   //   return this.http.get<{ message: string; post: Post }>(this.url + id);
   // }
 
-  updatePost(post: Post) {
-    this.http.put<void>(`${this.url}${post.id}`, post).subscribe(
-      (result) => {
-        this.router.navigate(['/']);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+  updatePost(post: Partial<Post>) {
+    return this.http.put<any>(`${this.url}${post.id}`, post);
   }
 
   deletePost(id: string) {
-    this.http.delete<void>(`${this.url}${id}`).subscribe(
-      (res) => {
-        this.posts = this.posts.filter((post) => post.id != id);
-        this.postsUpdated.next([...this.posts]);
-      },
-      (err) => {
-        console.log(err.error.message);
-      }
-    );
+    return this.http.delete<{ message: string }>(`${this.url}${id}`);
   }
 
   getPostsUpdatedListener() {

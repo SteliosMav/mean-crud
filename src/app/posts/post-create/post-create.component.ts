@@ -1,11 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { select, Store } from '@ngrx/store';
 
-import { Subscription } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
+import { AppState } from 'src/app/posts/post-list/store/reducers';
+import { addPost, postUpdated } from '../post-list/store/actions';
+import { selectPost } from '../post-list/store/selectors';
 
 import { Post } from '../post.model';
-import { PostService } from '../post.service';
 
 @Component({
   selector: 'app-post-create',
@@ -13,41 +16,29 @@ import { PostService } from '../post.service';
   styleUrls: ['./post-create.component.scss'],
 })
 export class PostsCreateComponent implements OnInit, OnDestroy {
-  constructor(
-    private postService: PostService,
-    private route: ActivatedRoute
-  ) {}
+  constructor(private route: ActivatedRoute, private store: Store<AppState>) {}
 
   public post: Post = {
     title: '',
     content: '',
   };
 
-  private params: string = '';
+  post$: Observable<Post>;
+
+  private paramsId: string = '';
 
   public isLoading: boolean = false;
 
   checkParamsSubscription: Subscription;
 
-  checkEdit() {
+  checkEdit(): null | void {
     this.checkParamsSubscription = this.route.paramMap.subscribe(
-      (result: any): void => {
+      (result: any): null | void => {
         if (result.params.id === undefined) {
           return;
         }
-        this.params = result.params.id;
-        this.isLoading = true;
-        this.postService.getPost(this.params).subscribe(
-          (result) => {
-            this.post.title = result.post.title;
-            this.post.content = result.post.content;
-            this.isLoading = false;
-          },
-          (err) => {
-            console.log(err.error.message);
-            this.isLoading = false;
-          }
-        );
+        this.paramsId = result.params.id;
+        this.post$ = this.store.pipe(select(selectPost(this.paramsId)));
       }
     );
   }
@@ -57,14 +48,35 @@ export class PostsCreateComponent implements OnInit, OnDestroy {
       return;
     }
     this.post = form.form.value;
-    this.isLoading = true;
-    if (this.params === '') {
-      this.postService.addPost(this.post);
+    if (this.paramsId === '') {
+      this.store.dispatch(addPost({ addedPost: this.post }));
+      this.isLoading = true;
+      form.resetForm();
     } else {
-      this.post.id = this.params;
-      this.postService.updatePost(this.post);
+      //    **** To avoid extra requests if nothing was changed ****
+      //
+      // if (
+      //   post.content === this.post.content &&
+      //   post.title === this.post.title
+      // ) {
+      //   this.router.navigate(['/']);
+      // } else if (!this.test) {
+      //   this.test = !this.test;
+      //   const postToUpdate = { ...this.post, id: this.paramsId };
+      //   console.log(postToUpdate);
+      //   this.store.dispatch(
+      //     postUpdated({
+      //       updatedPost: { id: postToUpdate.id, changes: postToUpdate },
+      //     })
+      //   );
+      // }
+      const postToUpdate = { ...this.post, id: this.paramsId };
+      this.store.dispatch(
+        postUpdated({
+          updatedPost: { id: postToUpdate.id, changes: postToUpdate },
+        })
+      );
     }
-    form.resetForm();
   }
 
   ngOnInit(): void {

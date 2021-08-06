@@ -7,7 +7,7 @@
         placeholder="Add a title"
         matInput
         type="text"
-        [ngModel]="post.title"
+        [ngModel]="(post$ | async)?.title"
         required
         minlength="3"
         #title="ngModel"
@@ -20,7 +20,7 @@
         placeholder="Enrich with some content"
         rows="4"
         matInput
-        [ngModel]="post.content"
+        [ngModel]="(post$ | async)?.content"
         required
         #content="ngModel"
       ></textarea>
