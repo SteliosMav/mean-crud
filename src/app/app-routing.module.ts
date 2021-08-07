@@ -9,9 +9,9 @@ const routes: Routes = [
   {
     path: '',
     component: PostListComponent,
-    // resolve: {
-    //   posts: PostsResolver,
-    // },
+    resolve: {
+      posts: PostsResolver,
+    },
   },
   { path: 'create', component: PostsCreateComponent },
   { path: 'edit/:id', component: PostsCreateComponent },

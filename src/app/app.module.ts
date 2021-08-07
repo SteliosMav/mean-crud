@@ -23,6 +23,18 @@ import { postReducer } from './posts/post-list/store/reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { postsEffects } from './posts/post-list/store/effects';
 import { PostsResolver } from './posts/post-list/post-list.resolver';
+import {
+  EntityDataModule,
+  EntityDataService,
+  EntityDefinitionService,
+  EntityMetadataMap,
+} from '@ngrx/data';
+import { PostEntityService } from './posts/post-list/store/post-entity.service';
+import { PostsDataService } from './posts/post-list/store/posts-data.service';
+
+const entityMetadata: EntityMetadataMap = {
+  Post: {},
+};
 
 @NgModule({
   declarations: [
@@ -44,6 +56,7 @@ import { PostsResolver } from './posts/post-list/post-list.resolver';
     MatExpansionModule,
     HttpClientModule,
     AppRoutingModule,
+
     StoreModule.forRoot(
       { posts: postReducer },
       {
@@ -60,8 +73,19 @@ import { PostsResolver } from './posts/post-list/post-list.resolver';
       logOnly: environment.production,
     }),
     EffectsModule.forRoot([postsEffects]),
+    EntityDataModule.forRoot({ entityMetadata }),
   ],
-  providers: [PostsResolver],
+  providers: [PostsResolver, PostEntityService, PostsDataService],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(
+    private eds: EntityDefinitionService,
+    private entityDataService: EntityDataService,
+    private postsDataService: PostsDataService
+  ) {
+    eds.registerMetadataMap(entityMetadata);
+
+    entityDataService.registerService('Post', postsDataService);
+  }
+}

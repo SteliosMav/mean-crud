@@ -6,6 +6,7 @@ import { deletePost } from 'src/app/posts/post-list/store/actions';
 
 import { Post } from '../post.model';
 import { PostService } from '../post.service';
+import { PostEntityService } from './store/post-entity.service';
 import { selectAllPosts } from './store/selectors';
 
 @Component({
@@ -14,7 +15,11 @@ import { selectAllPosts } from './store/selectors';
   styleUrls: ['./post-list.component.scss'],
 })
 export class PostListComponent implements OnInit, OnDestroy {
-  constructor(private postService: PostService, private store: Store) {}
+  constructor(
+    private postService: PostService,
+    private store: Store,
+    private postEntityService: PostEntityService
+  ) {}
 
   public posts$: Observable<Post[]>;
 
@@ -29,7 +34,8 @@ export class PostListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.reload();
+    //this.postEntityService.getAll();
+    //this.reload();
   }
 
   ngOnDestroy() {}

@@ -5,4 +5,16 @@ const postSchema = mongoose.Schema({
   content: { type: String, required: true },
 });
 
+postSchema.virtual("id").get(function () {
+  return this._id.toHexString();
+});
+
+postSchema.set("toObject", {
+  virtuals: true,
+});
+
+postSchema.set("toJSON", {
+  virtuals: true,
+});
+
 module.exports = mongoose.model("Post", postSchema);
