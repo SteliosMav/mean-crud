@@ -1,5 +1,4 @@
 <mat-card>
-  <mat-spinner *ngIf="isLoading"></mat-spinner>
   <form *ngIf="!isLoading" #form="ngForm" (ngSubmit)="onSubmit(form)">
     <mat-form-field>
       <input

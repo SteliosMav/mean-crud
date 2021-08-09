@@ -71,11 +71,11 @@
           "configurations": {
             "production": {
               "browserTarget": "mean-crud:build:production",
-              "proxyConfig": "src/proxy.conf.json"
+              "proxyConfig": "proxy.conf.json"
             },
             "development": {
               "browserTarget": "mean-crud:build:development",
-              "proxyConfig": "src/proxy.conf.json"
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

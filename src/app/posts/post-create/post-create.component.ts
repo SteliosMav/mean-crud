@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { select, Store } from '@ngrx/store';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 
 import { Observable, of, Subscription } from 'rxjs';
-import { AppState } from 'src/app/posts/post-list/store/reducers';
-import { addPost, postUpdated } from '../post-list/store/actions';
-import { selectPost } from '../post-list/store/selectors';
+import { map, tap } from 'rxjs/operators';
+import { PostEntityService } from '../post-list/store/post-entity.service';
 
 import { Post } from '../post.model';
 
@@ -16,7 +15,11 @@ import { Post } from '../post.model';
   styleUrls: ['./post-create.component.scss'],
 })
 export class PostsCreateComponent implements OnInit, OnDestroy {
-  constructor(private route: ActivatedRoute, private store: Store<AppState>) {}
+  constructor(
+    private route: ActivatedRoute,
+    private postEntityService: PostEntityService,
+    private router: Router
+  ) {}
 
   public post: Post = {
     title: '',
@@ -38,7 +41,11 @@ export class PostsCreateComponent implements OnInit, OnDestroy {
           return;
         }
         this.paramsId = result.params.id;
-        this.post$ = this.store.pipe(select(selectPost(this.paramsId)));
+        this.post$ = this.postEntityService.collection$.pipe(
+          map((collection) => {
+            return collection.entities[this.paramsId];
+          })
+        );
       }
     );
   }
@@ -49,7 +56,9 @@ export class PostsCreateComponent implements OnInit, OnDestroy {
     }
     this.post = form.form.value;
     if (this.paramsId === '') {
-      this.store.dispatch(addPost({ addedPost: this.post }));
+      this.postEntityService.add(this.post).subscribe(() => {
+        this.router.navigate(['/']);
+      });
       this.isLoading = true;
       form.resetForm();
     } else {
@@ -71,11 +80,8 @@ export class PostsCreateComponent implements OnInit, OnDestroy {
       //   );
       // }
       const postToUpdate = { ...this.post, id: this.paramsId };
-      this.store.dispatch(
-        postUpdated({
-          updatedPost: { id: postToUpdate.id, changes: postToUpdate },
-        })
-      );
+      this.postEntityService.update(postToUpdate);
+      this.router.navigate(['/']);
     }
   }
 

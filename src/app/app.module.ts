@@ -19,9 +19,7 @@ import { PostListComponent } from './posts/post-list/post-list.component';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
-import { postReducer } from './posts/post-list/store/reducers';
 import { EffectsModule } from '@ngrx/effects';
-import { postsEffects } from './posts/post-list/store/effects';
 import { PostsResolver } from './posts/post-list/post-list.resolver';
 import {
   EntityDataModule,
@@ -33,7 +31,11 @@ import { PostEntityService } from './posts/post-list/store/post-entity.service';
 import { PostsDataService } from './posts/post-list/store/posts-data.service';
 
 const entityMetadata: EntityMetadataMap = {
-  Post: {},
+  Post: {
+    entityDispatcherOptions: {
+      optimisticUpdate: true,
+    },
+  },
 };
 
 @NgModule({
@@ -58,7 +60,7 @@ const entityMetadata: EntityMetadataMap = {
     AppRoutingModule,
 
     StoreModule.forRoot(
-      { posts: postReducer },
+      {},
       {
         runtimeChecks: {
           strictStateImmutability: true,
@@ -72,7 +74,7 @@ const entityMetadata: EntityMetadataMap = {
       maxAge: 25,
       logOnly: environment.production,
     }),
-    EffectsModule.forRoot([postsEffects]),
+    EffectsModule.forRoot(),
     EntityDataModule.forRoot({ entityMetadata }),
   ],
   providers: [PostsResolver, PostEntityService, PostsDataService],
