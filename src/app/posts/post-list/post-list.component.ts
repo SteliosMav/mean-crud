@@ -1,4 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { Observable } from 'rxjs';
@@ -9,6 +14,7 @@ import { PostEntityService } from './store/post-entity.service';
   selector: 'app-post-list',
   templateUrl: './post-list.component.html',
   styleUrls: ['./post-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PostListComponent implements OnInit, OnDestroy {
   constructor(

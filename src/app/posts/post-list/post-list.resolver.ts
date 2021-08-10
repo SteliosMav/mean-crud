@@ -4,7 +4,6 @@ import {
   Resolve,
   RouterStateSnapshot,
 } from '@angular/router';
-import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { filter, first, map, tap } from 'rxjs/operators';
 import { PostEntityService } from './store/post-entity.service';

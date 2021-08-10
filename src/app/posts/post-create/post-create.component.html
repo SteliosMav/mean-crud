@@ -1,5 +1,6 @@
+<mat-spinner *ngIf="isLoading | async"></mat-spinner>
 <mat-card>
-  <form *ngIf="!isLoading" #form="ngForm" (ngSubmit)="onSubmit(form)">
+  <form *ngIf="!(isLoading | async)" #form="ngForm" (ngSubmit)="onSubmit(form)">
     <mat-form-field>
       <input
         name="title"

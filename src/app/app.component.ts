@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import {
   NavigationCancel,
   NavigationEnd,
@@ -6,28 +6,28 @@ import {
   NavigationStart,
   Router,
 } from '@angular/router';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit {
   constructor(private router: Router) {}
 
-  loading: boolean = false;
+  loading$: Observable<boolean>;
 
   ngOnInit() {
     this.router.events.subscribe((event) => {
       switch (true) {
         case event instanceof NavigationStart: {
-          this.loading = true;
           break;
         }
         case event instanceof NavigationEnd:
         case event instanceof NavigationCancel:
         case event instanceof NavigationError: {
-          this.loading = false;
           break;
         }
         default: {

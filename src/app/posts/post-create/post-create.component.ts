@@ -1,7 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Store } from '@ngrx/store';
 
 import { Observable, of, Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
@@ -13,6 +17,7 @@ import { Post } from '../post.model';
   selector: 'app-post-create',
   templateUrl: './post-create.component.html',
   styleUrls: ['./post-create.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PostsCreateComponent implements OnInit, OnDestroy {
   constructor(
@@ -30,7 +35,7 @@ export class PostsCreateComponent implements OnInit, OnDestroy {
 
   private paramsId: string = '';
 
-  public isLoading: boolean = false;
+  public isLoading: Observable<any>;
 
   checkParamsSubscription: Subscription;
 
@@ -59,7 +64,6 @@ export class PostsCreateComponent implements OnInit, OnDestroy {
       this.postEntityService.add(this.post).subscribe(() => {
         this.router.navigate(['/']);
       });
-      this.isLoading = true;
       form.resetForm();
     } else {
       //    **** To avoid extra requests if nothing was changed ****
@@ -87,6 +91,7 @@ export class PostsCreateComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.checkEdit();
+    this.isLoading = this.postEntityService.loading$;
   }
   ngOnDestroy(): void {
     this.checkParamsSubscription.unsubscribe();
