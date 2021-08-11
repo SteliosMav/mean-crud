@@ -13,3 +13,21 @@ p {
 mat-spinner {
   margin: auto;
 }
+
+.search-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+  margin: auto;
+}
+
+.search-full-width {
+  width: 100%;
+}
+
+.date {
+  font-size: 14px;
+  color: #777777;
+  margin-top: 2rem;
+  font-style: italic;
+}

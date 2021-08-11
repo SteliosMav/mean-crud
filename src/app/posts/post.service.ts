@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 
 import { Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { AppState } from './post-list/store/reducers';
 
 import { Post } from './post.model';
@@ -32,7 +32,11 @@ export class PostService {
     );
   }
   addPost(post: Post) {
-    return this.http.post<{ message: string; post: Post }>(this.url, post);
+    return this.http.post<{ message: string; post: Post }>(this.url, post).pipe(
+      tap((result) => {
+        console.log(result);
+      })
+    );
   }
   getPost(id: string): Observable<{ message: string; post: Post }> {
     return this.http.get<{ message: string; post: Post }>(this.url + id);

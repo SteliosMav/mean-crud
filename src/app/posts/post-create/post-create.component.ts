@@ -49,7 +49,10 @@ export class PostsCreateComponent implements OnInit, OnDestroy {
     }
     this.post = form.form.value;
     if (this.paramsId === '') {
-      this.store.dispatch(addPost({ addedPost: this.post }));
+      const newDate = new Date().toString();
+      this.store.dispatch(
+        addPost({ addedPost: { ...this.post, dateCreated: newDate } })
+      );
       this.isLoading = true;
       form.resetForm();
     } else {
