@@ -13,8 +13,20 @@ const routes: Routes = [
       posts: PostsResolver,
     },
   },
-  { path: 'create', component: PostsCreateComponent },
-  { path: 'edit/:id', component: PostsCreateComponent },
+  {
+    path: 'create',
+    component: PostsCreateComponent,
+    resolve: {
+      posts: PostsResolver,
+    },
+  },
+  {
+    path: 'edit/:id',
+    component: PostsCreateComponent,
+    resolve: {
+      posts: PostsResolver,
+    },
+  },
   { path: '**', redirectTo: '' },
 ];
 

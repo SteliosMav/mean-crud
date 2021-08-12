@@ -22,7 +22,6 @@ export class postsEffects {
         return this.postService.getPosts();
       }),
       map((posts) => {
-        this.router.navigate(['/']);
         return postsFetched({ posts });
       })
     );

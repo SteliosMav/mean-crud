@@ -10,16 +10,10 @@ router.post("", (req, res) => {
     content: req.body.content,
     dateCreated: req.body.dateCreated,
   });
-  post.save().then((result) => {
-    return res.status(201).json({
+  post.save().then((post) => {
+    res.status(201).json({
       message: "Post added successfully",
-      post: { ...result._doc },
-      // {
-      //   id: result._id,
-      //   title: result.title,
-      //   content: result.content,
-      //   dateCreated: result.dateCreated,
-      // },
+      post,
     });
   });
 });

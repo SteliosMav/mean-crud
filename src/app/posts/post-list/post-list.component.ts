@@ -43,6 +43,31 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.posts$ = this.store.pipe(select(selectAllPosts));
   }
 
+  convertDate(inputDate) {
+    let date = new Date(inputDate);
+    let year = date.getFullYear();
+    let month: number | string = date.getMonth() + 1;
+    let dt: number | string = date.getDate();
+
+    if (dt < 10) {
+      dt = '0' + dt;
+    }
+    if (month < 10) {
+      month = '0' + month;
+    }
+
+    return `${dt}/${month}/${year}`;
+  }
+
+  checkIfUpdated(cr, up) {
+    const crMs = Date.parse(cr);
+    const upMs = Date.parse(up);
+    if (crMs + 5000 < upMs) {
+      return true;
+    }
+    return false;
+  }
+
   ngOnInit(): void {
     this.reload();
   }

@@ -21,22 +21,12 @@ export class PostService {
   getPosts() {
     return this.http.get<{ message: string; posts: Post[] }>(this.url).pipe(
       map((resData): Post[] => {
-        return resData.posts.map((post: Post): Post => {
-          return {
-            title: post.title,
-            content: post.content,
-            id: post._id,
-          };
-        });
+        return resData.posts;
       })
     );
   }
   addPost(post: Post) {
-    return this.http.post<{ message: string; post: Post }>(this.url, post).pipe(
-      tap((result) => {
-        console.log(result);
-      })
-    );
+    return this.http.post<{ message: string; post: Post }>(this.url, post);
   }
   getPost(id: string): Observable<{ message: string; post: Post }> {
     return this.http.get<{ message: string; post: Post }>(this.url + id);

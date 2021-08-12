@@ -14,11 +14,16 @@
 
 <mat-accordion multi="true" *ngIf="(posts$ | async)?.length > 0 && true">
   <mat-expansion-panel *ngFor="let post of posts$ | async">
-    <mat-expansion-panel-header>
+    <mat-expansion-panel-header class="title">
       {{ post.title }}
     </mat-expansion-panel-header>
-    <p>{{ post.content }}</p>
-    <div class="date">11-01-1997</div>
+    <div class="content">{{ post.content }}</div>
+    <div class="date">
+      <div>Created at: {{ convertDate(post.createdAt) }}</div>
+      <div *ngIf="checkIfUpdated(post.createdAt, post.updatedAt)">
+        Updated at: {{ convertDate(post.updatedAt) }}
+      </div>
+    </div>
     <mat-action-row>
       <button
         type="button"

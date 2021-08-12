@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 
 import { Observable, of, Subscription } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { AppState } from 'src/app/posts/post-list/store/reducers';
 import { addPost, postUpdated } from '../post-list/store/actions';
 import { selectPost } from '../post-list/store/selectors';
@@ -18,10 +19,12 @@ import { Post } from '../post.model';
 export class PostsCreateComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute, private store: Store<AppState>) {}
 
-  public post: Post = {
-    title: '',
-    content: '',
-  };
+  // public post: Post = {
+  //   title: '',
+  //   content: '',
+  // };
+
+  form: FormGroup;
 
   post$: Observable<Post>;
 
@@ -38,23 +41,31 @@ export class PostsCreateComponent implements OnInit, OnDestroy {
           return;
         }
         this.paramsId = result.params.id;
-        this.post$ = this.store.pipe(select(selectPost(this.paramsId)));
+        this.store
+          .pipe(
+            select(selectPost(this.paramsId)),
+            tap((post) => {
+              this.form.setValue({ title: post.title, content: post.content });
+            })
+          )
+          .subscribe();
       }
     );
   }
 
-  onSubmit(form: NgForm): null | void {
-    if (form.invalid) {
+  onPickImg(event: Event) {
+    console.log((event.target as HTMLInputElement).files);
+  }
+
+  onSubmit(): null | void {
+    if (this.form.invalid) {
       return;
     }
-    this.post = form.form.value;
+    //this.post = form.form.value;
     if (this.paramsId === '') {
-      const newDate = new Date().toString();
-      this.store.dispatch(
-        addPost({ addedPost: { ...this.post, dateCreated: newDate } })
-      );
+      this.store.dispatch(addPost({ addedPost: this.form.value }));
       this.isLoading = true;
-      form.resetForm();
+      this.form.reset();
     } else {
       //    **** To avoid extra requests if nothing was changed ****
       //
@@ -73,7 +84,7 @@ export class PostsCreateComponent implements OnInit, OnDestroy {
       //     })
       //   );
       // }
-      const postToUpdate = { ...this.post, id: this.paramsId };
+      const postToUpdate = { ...this.form.value, id: this.paramsId };
       this.store.dispatch(
         postUpdated({
           updatedPost: { id: postToUpdate.id, changes: postToUpdate },
@@ -83,6 +94,12 @@ export class PostsCreateComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.form = new FormGroup({
+      title: new FormControl(null, {
+        validators: [Validators.required, Validators.minLength(3)],
+      }),
+      content: new FormControl(null, { validators: [Validators.required] }),
+    });
     this.checkEdit();
   }
   ngOnDestroy(): void {
