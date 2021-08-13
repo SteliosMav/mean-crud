@@ -1,16 +1,17 @@
 <mat-toolbar color="primary">
-  <div class="logo">
-    <a routerLink="">MY CRUD</a>
-  </div>
+  <mat-icon style="cursor: pointer" (click)="onToggle()">menu</mat-icon>
   <div class="spacer"></div>
-  <div>
+  <div class="logo">
+    <a routerLink="/">MY CRUD</a>
+  </div>
+  <!-- <div>
     <ul>
       <li>
         <a mat-button routerLink="/create" routerLinkActive="mat-accent">
           Create Post
         </a>
-      </li>
-      <!-- <li>
+      </li> -->
+  <!-- <li>
         <a mat-button routerLink="/create" routerLinkActive="mat-accent">
           Login
         </a>
@@ -20,6 +21,6 @@
           Sign Up
         </a>
       </li> -->
-    </ul>
-  </div>
+  <!-- </ul>
+  </div> -->
 </mat-toolbar>

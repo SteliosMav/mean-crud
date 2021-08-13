@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { PostsCreateComponent } from './posts/post-create/post-create.component';
 import { PostListComponent } from './posts/post-list/post-list.component';
 import { PostsResolver } from './posts/post-list/post-list.resolver';
 
@@ -15,17 +14,17 @@ const routes: Routes = [
   },
   {
     path: 'create',
-    component: PostsCreateComponent,
-    resolve: {
-      posts: PostsResolver,
-    },
+    loadChildren: () =>
+      import('./posts/post-create/post-create.module').then(
+        (m) => m.PostsCreateModule
+      ),
   },
   {
     path: 'edit/:id',
-    component: PostsCreateComponent,
-    resolve: {
-      posts: PostsResolver,
-    },
+    loadChildren: () =>
+      import('./posts/post-create/post-create.module').then(
+        (m) => m.PostsCreateModule
+      ),
   },
   { path: '**', redirectTo: '' },
 ];

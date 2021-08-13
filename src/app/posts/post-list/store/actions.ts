@@ -9,7 +9,7 @@ export const postsFetched = createAction(
   props<{ posts: Post[] }>()
 );
 
-export const postUpdated = createAction(
+export const updatePost = createAction(
   '[Post Form] Update Post',
   props<{ updatedPost: Update<Post> }>()
 );

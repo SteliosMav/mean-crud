@@ -17,6 +17,8 @@ export class AppComponent implements OnInit {
 
   loading: boolean = false;
 
+  opened = false;
+
   ngOnInit() {
     this.router.events.subscribe((event) => {
       switch (true) {

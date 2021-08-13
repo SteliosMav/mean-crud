@@ -22,25 +22,24 @@ export class postsEffects {
         return this.postService.getPosts();
       }),
       map((posts) => {
+        //this.router.navigate(['/']);
         return postsFetched({ posts });
       })
     );
   });
 
-  updatePost$ = createEffect(
-    () => {
-      return this.actions$.pipe(
-        ofType(actions.postUpdated),
-        tap(() => {
-          this.router.navigate(['/']);
-        }),
-        concatMap((action) => {
-          return this.postService.updatePost(action.updatedPost.changes);
-        })
-      );
-    },
-    { dispatch: false }
-  );
+  updatePost$ = createEffect(() => {
+    return this.actions$.pipe(
+      ofType(actions.updatePost),
+      concatMap((action) => {
+        return this.postService.updatePost(action.updatedPost.changes);
+      }),
+      map((posts) => {
+        this.router.navigate(['/']);
+        return fetchPosts();
+      })
+    );
+  });
 
   addPost$ = createEffect(() => {
     return this.actions$.pipe(
@@ -48,7 +47,10 @@ export class postsEffects {
       concatMap((action) => {
         return this.postService.addPost(action.addedPost);
       }),
-      map((action) => fetchPosts())
+      map((action) => {
+        this.router.navigate(['/']);
+        return fetchPosts();
+      })
     );
   });
 

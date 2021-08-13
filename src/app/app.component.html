@@ -1,5 +1,23 @@
-<app-header></app-header>
+<app-header (toggleSidenav)="opened = !opened"></app-header>
+<mat-sidenav-container style="float: left">
+  <mat-sidenav mode="side" [(opened)]="opened">
+    <a
+      mat-button
+      routerLink="/"
+      routerLinkActive="mat-primary"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      Post List
+    </a>
+    <br />
+    <a mat-button routerLink="/create" routerLinkActive="mat-primary">
+      Create Post
+    </a>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
 <main>
-  <router-outlet></router-outlet>
   <mat-spinner *ngIf="loading"></mat-spinner>
 </main>

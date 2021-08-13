@@ -4,12 +4,17 @@ import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 
 import { Observable, of, Subscription } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { AppState } from 'src/app/posts/post-list/store/reducers';
-import { addPost, postUpdated } from '../post-list/store/actions';
-import { selectPost } from '../post-list/store/selectors';
+import { addPost, updatePost } from '../post-list/store/actions';
+import {
+  selectAllPosts,
+  selectLoading,
+  selectPost,
+} from '../post-list/store/selectors';
 
 import { Post } from '../post.model';
+import { mimeType } from './mime-typ.validator';
 
 @Component({
   selector: 'app-post-create',
@@ -19,18 +24,14 @@ import { Post } from '../post.model';
 export class PostsCreateComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute, private store: Store<AppState>) {}
 
-  // public post: Post = {
-  //   title: '',
-  //   content: '',
-  // };
-
   form: FormGroup;
+  imgPreview: string;
 
   post$: Observable<Post>;
 
   private paramsId: string = '';
 
-  public isLoading: boolean = false;
+  loading$: Observable<boolean>;
 
   checkParamsSubscription: Subscription;
 
@@ -45,7 +46,12 @@ export class PostsCreateComponent implements OnInit, OnDestroy {
           .pipe(
             select(selectPost(this.paramsId)),
             tap((post) => {
-              this.form.setValue({ title: post.title, content: post.content });
+              this.imgPreview = post.imagePath;
+              this.form.setValue({
+                title: post.title,
+                content: post.content,
+                image: post.imagePath,
+              });
             })
           )
           .subscribe();
@@ -53,52 +59,45 @@ export class PostsCreateComponent implements OnInit, OnDestroy {
     );
   }
 
-  onPickImg(event: Event) {
-    console.log((event.target as HTMLInputElement).files);
-  }
-
   onSubmit(): null | void {
     if (this.form.invalid) {
       return;
     }
-    //this.post = form.form.value;
     if (this.paramsId === '') {
       this.store.dispatch(addPost({ addedPost: this.form.value }));
-      this.isLoading = true;
       this.form.reset();
     } else {
-      //    **** To avoid extra requests if nothing was changed ****
-      //
-      // if (
-      //   post.content === this.post.content &&
-      //   post.title === this.post.title
-      // ) {
-      //   this.router.navigate(['/']);
-      // } else if (!this.test) {
-      //   this.test = !this.test;
-      //   const postToUpdate = { ...this.post, id: this.paramsId };
-      //   console.log(postToUpdate);
-      //   this.store.dispatch(
-      //     postUpdated({
-      //       updatedPost: { id: postToUpdate.id, changes: postToUpdate },
-      //     })
-      //   );
-      // }
       const postToUpdate = { ...this.form.value, id: this.paramsId };
       this.store.dispatch(
-        postUpdated({
+        updatePost({
           updatedPost: { id: postToUpdate.id, changes: postToUpdate },
         })
       );
     }
   }
 
+  onPickImg(event: Event) {
+    const file = (event.target as HTMLInputElement).files[0];
+    this.form.patchValue({ image: file });
+    this.form.get('image').updateValueAndValidity();
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imgPreview = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+
   ngOnInit(): void {
+    this.loading$ = this.store.pipe(select(selectLoading));
     this.form = new FormGroup({
       title: new FormControl(null, {
         validators: [Validators.required, Validators.minLength(3)],
       }),
       content: new FormControl(null, { validators: [Validators.required] }),
+      image: new FormControl(null, {
+        validators: [Validators.required],
+        asyncValidators: [mimeType],
+      }),
     });
     this.checkEdit();
   }

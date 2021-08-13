@@ -1,18 +1,9 @@
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
-
-import { MatInputModule } from '@angular/material/input';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { PostsCreateComponent } from './posts/post-create/post-create.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './header/header.component';
 import { PostListComponent } from './posts/post-list/post-list.component';
@@ -23,25 +14,16 @@ import { postReducer } from './posts/post-list/store/reducers';
 import { EffectsModule } from '@ngrx/effects';
 import { postsEffects } from './posts/post-list/store/effects';
 import { PostsResolver } from './posts/post-list/post-list.resolver';
+import { SearchPost } from './posts/post-list/search-post/search-post.component';
+import { Material } from './material.module';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    PostsCreateComponent,
-    HeaderComponent,
-    PostListComponent,
-  ],
+  declarations: [AppComponent, HeaderComponent, PostListComponent, SearchPost],
   imports: [
-    BrowserModule,
     AppRoutingModule,
     FormsModule,
+    Material,
     BrowserAnimationsModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
-    MatCardModule,
-    MatButtonModule,
-    MatToolbarModule,
-    MatExpansionModule,
     HttpClientModule,
     ReactiveFormsModule,
     AppRoutingModule,
@@ -51,8 +33,8 @@ import { PostsResolver } from './posts/post-list/post-list.resolver';
         runtimeChecks: {
           strictStateImmutability: true,
           strictActionImmutability: true,
-          strictActionSerializability: true,
-          strictStateSerializability: true,
+          // strictActionSerializability: true,
+          // strictStateSerializability: true,
         },
       }
     ),

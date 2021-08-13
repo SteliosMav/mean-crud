@@ -7,3 +7,20 @@ mat-spinner {
   margin: auto;
   margin-top: 5rem;
 }
+mat-sidenav-container {
+  height: calc(100vh - 64px);
+  width: 100vw;
+}
+mat-sidenav {
+  background-color: #424242;
+  color: aliceblue;
+}
+.mat-button.mat-accent {
+  border-radius: 0px;
+}
+ul {
+  list-style-type: none;
+}
+a.mat-button {
+  width: 100%;
+}

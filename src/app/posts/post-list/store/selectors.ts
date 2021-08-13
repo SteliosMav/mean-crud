@@ -4,6 +4,10 @@ import * as fromPosts from './reducers';
 
 export const selectPostsState = createFeatureSelector<PostsState>('posts');
 
+export const selectLoading = createSelector(selectPostsState, (posts) => {
+  return posts.loading;
+});
+
 export const selectAllPosts = createSelector(
   selectPostsState,
   fromPosts.selectAll

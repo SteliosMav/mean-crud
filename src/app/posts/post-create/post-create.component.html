@@ -1,6 +1,6 @@
-<mat-card>
-  <mat-spinner *ngIf="isLoading"></mat-spinner>
-  <form [formGroup]="form" *ngIf="!isLoading" (ngSubmit)="onSubmit()">
+<mat-spinner *ngIf="loading$ | async"></mat-spinner>
+<mat-card *ngIf="!(loading$ | async)">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <mat-form-field>
       <input
         formControlName="title"
@@ -13,6 +13,12 @@
         >Please enter a post title</mat-error
       >
     </mat-form-field>
+    <div
+      class="img-preview"
+      *ngIf="imgPreview !== '' && imgPreview && form.get('image').valid"
+    >
+      <img [src]="imgPreview" [alt]="form.value.title" />
+    </div>
 
     <input
       (change)="onPickImg($event)"
@@ -23,6 +29,7 @@
     <button
       class="btn-img"
       mat-raised-button
+      [color]="'accent'"
       type="button"
       (click)="uploadImg.click()"
     >
@@ -43,7 +50,7 @@
     </mat-form-field>
     <button
       class="btn-submit"
-      [disabled]="form.invalid"
+      [disabled]="!form.valid"
       color="primary"
       mat-raised-button
       type="submit"

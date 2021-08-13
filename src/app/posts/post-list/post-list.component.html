@@ -1,45 +1,52 @@
-<!-- <div *ngIf="posts$ | async as posts"></div> -->
-<!-- <mat-spinner *ngIf="isLoading"></mat-spinner> -->
-<form class="search-form">
-  <mat-form-field class="search-full-width" appearance="fill">
-    <mat-label>Search for Post</mat-label>
-    <input
-      (input)="onChange($event)"
-      matInput
-      placeholder="Search.."
-      value=""
-    />
-  </mat-form-field>
-</form>
+<app-search-post></app-search-post>
+<!-- <div class="wrapper"> -->
+<div class="wrapper">
+  <button class="sort-by" mat-button [matMenuTriggerFor]="menu">
+    Sort by<mat-icon>keyboard_arrow_down</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="sortByDate('asc')">Date (asc)</button>
+    <button mat-menu-item (click)="sortByDate('des')">Date (des)</button>
+  </mat-menu>
 
-<mat-accordion multi="true" *ngIf="(posts$ | async)?.length > 0 && true">
-  <mat-expansion-panel *ngFor="let post of posts$ | async">
-    <mat-expansion-panel-header class="title">
-      {{ post.title }}
-    </mat-expansion-panel-header>
-    <div class="content">{{ post.content }}</div>
-    <div class="date">
-      <div>Created at: {{ convertDate(post.createdAt) }}</div>
-      <div *ngIf="checkIfUpdated(post.createdAt, post.updatedAt)">
-        Updated at: {{ convertDate(post.updatedAt) }}
+  <mat-accordion multi="true" *ngIf="(posts$ | async)?.length > 0 && true">
+    <mat-expansion-panel *ngFor="let post of posts$ | async">
+      <mat-expansion-panel-header class="title">
+        {{ post.title }}
+      </mat-expansion-panel-header>
+      <div>
+        <img class="post-image" [src]="post.imagePath" [alt]="post.title" />
       </div>
-    </div>
-    <mat-action-row>
-      <button
-        type="button"
-        mat-button
-        color="primary"
-        [routerLink]="['/edit', post.id]"
-      >
-        Edit
-      </button>
-      <button type="button" mat-button color="warn" (click)="onDelete(post.id)">
-        Delete
-      </button>
-    </mat-action-row>
-  </mat-expansion-panel>
-</mat-accordion>
+      <div class="content">{{ post.content }}</div>
+      <div class="date">
+        <div>Created at: {{ convertDate(post.createdAt) }}</div>
+        <div *ngIf="checkIfUpdated(post.createdAt, post.updatedAt)">
+          Updated at: {{ convertDate(post.updatedAt) }}
+        </div>
+      </div>
 
+      <mat-action-row>
+        <button
+          type="button"
+          mat-button
+          color="primary"
+          [routerLink]="['/edit', post.id]"
+        >
+          Edit
+        </button>
+        <button
+          type="button"
+          mat-button
+          color="warn"
+          (click)="onDelete(post.id)"
+        >
+          Delete
+        </button>
+      </mat-action-row>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
 <p class="mat-body-1 no-posts-message" *ngIf="(posts$ | async)?.length <= 0">
   No posts added yet
 </p>
+<!-- </div> -->

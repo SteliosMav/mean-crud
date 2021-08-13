@@ -1,15 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 
-import { Observable } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { deletePost } from 'src/app/posts/post-list/store/actions';
 
 import { Post } from '../post.model';
 import { PostService } from '../post.service';
 import { selectAllPosts } from './store/selectors';
 
-import { MatInputModule } from '@angular/material/input';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-post-list',
@@ -23,17 +22,11 @@ export class PostListComponent implements OnInit, OnDestroy {
 
   public postsExist: boolean;
 
-  onChange(event) {
-    const value = event.target.value.toLowerCase();
-    this.posts$ = this.store.pipe(
-      select(selectAllPosts),
-      map((posts) => {
-        return posts.filter((post) => {
-          return post.title.toLowerCase().includes(value);
-        });
-      })
-    );
-  }
+  private inputChangeSub: Subscription =
+    this.postService.inputChanged.subscribe((posts) => {
+      const postsObs = of(posts);
+      this.posts$ = postsObs.pipe();
+    });
 
   onDelete(id: string) {
     this.store.dispatch(deletePost({ id }));
@@ -67,10 +60,25 @@ export class PostListComponent implements OnInit, OnDestroy {
     }
     return false;
   }
+  sortByDate(order) {
+    this.posts$ = this.posts$.pipe(
+      map((posts) => {
+        return posts.sort((a, b) => {
+          const ad = new Date(a.createdAt).getTime();
+          const bd = new Date(b.createdAt).getTime();
+          if (order === 'asc') {
+            return bd - ad;
+          } else return ad - bd;
+        });
+      })
+    );
+  }
 
   ngOnInit(): void {
     this.reload();
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    this.inputChangeSub.unsubscribe();
+  }
 }

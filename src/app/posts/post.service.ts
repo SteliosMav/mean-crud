@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { AppState } from './post-list/store/reducers';
 
@@ -18,6 +18,8 @@ export class PostService {
 
   private postsUpdated = new Subject<Post[]>();
 
+  public inputChanged = new Subject<Post[]>();
+
   getPosts() {
     return this.http.get<{ message: string; posts: Post[] }>(this.url).pipe(
       map((resData): Post[] => {
@@ -26,7 +28,11 @@ export class PostService {
     );
   }
   addPost(post: Post) {
-    return this.http.post<{ message: string; post: Post }>(this.url, post);
+    const postData = new FormData();
+    postData.append('title', post.title);
+    postData.append('content', post.content);
+    postData.append('image', post.image, post.title);
+    return this.http.post<{ message: string; post: Post }>(this.url, postData);
   }
   getPost(id: string): Observable<{ message: string; post: Post }> {
     return this.http.get<{ message: string; post: Post }>(this.url + id);
@@ -39,7 +45,16 @@ export class PostService {
   // }
 
   updatePost(post: Partial<Post>) {
-    return this.http.put<any>(`${this.url}${post.id}`, post);
+    let postData: Post | FormData | Partial<Post>;
+    if (typeof post.image === 'object') {
+      postData = new FormData();
+      postData.append('title', post.title);
+      postData.append('content', post.content);
+      postData.append('image', post.image, post.title);
+    } else {
+      postData = post;
+    }
+    return this.http.put<any>(`${this.url}${post.id}`, postData);
   }
 
   deletePost(id: string) {
