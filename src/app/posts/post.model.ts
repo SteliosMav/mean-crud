@@ -1,10 +1,10 @@
 export interface Post {
-  id?: string;
-  _id?: string;
+  id: string;
+  _id: string;
   title: string;
   content: string;
   image?: File;
-  createdAt?: string;
-  updatedAt?: string;
-  imagePath?: string;
+  createdAt: string;
+  updatedAt: string;
+  imagePath: string;
 }

@@ -34,7 +34,7 @@ import { Material } from './material.module';
           strictStateImmutability: true,
           strictActionImmutability: true,
           // strictActionSerializability: true,
-          // strictStateSerializability: true,
+          //strictStateSerializability: true,
         },
       }
     ),

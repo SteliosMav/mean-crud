@@ -1,5 +1,4 @@
 <app-search-post></app-search-post>
-<!-- <div class="wrapper"> -->
 <div class="wrapper">
   <button class="sort-by" mat-button [matMenuTriggerFor]="menu">
     Sort by<mat-icon>keyboard_arrow_down</mat-icon>
@@ -49,4 +48,3 @@
 <p class="mat-body-1 no-posts-message" *ngIf="(posts$ | async)?.length <= 0">
   No posts added yet
 </p>
-<!-- </div> -->

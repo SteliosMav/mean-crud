@@ -1,17 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormControl, FormGroup, NgForm, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 
-import { Observable, of, Subscription } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { AppState } from 'src/app/posts/post-list/store/reducers';
 import { addPost, updatePost } from '../post-list/store/actions';
-import {
-  selectAllPosts,
-  selectLoading,
-  selectPost,
-} from '../post-list/store/selectors';
+import { selectLoading, selectPost } from '../post-list/store/selectors';
 
 import { Post } from '../post.model';
 import { mimeType } from './mime-typ.validator';
@@ -27,11 +23,11 @@ export class PostsCreateComponent implements OnInit, OnDestroy {
   form: FormGroup;
   imgPreview: string;
 
+  loading$: Observable<boolean>;
+
   post$: Observable<Post>;
 
   private paramsId: string = '';
-
-  loading$: Observable<boolean>;
 
   checkParamsSubscription: Subscription;
 
@@ -45,7 +41,7 @@ export class PostsCreateComponent implements OnInit, OnDestroy {
         this.store
           .pipe(
             select(selectPost(this.paramsId)),
-            tap((post) => {
+            tap((post: Post) => {
               this.imgPreview = post.imagePath;
               this.form.setValue({
                 title: post.title,

@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
@@ -13,7 +12,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 
 @NgModule({
   imports: [
-    //BrowserModule,
     MatSidenavModule,
     MatInputModule,
     MatSidenavModule,
@@ -26,7 +24,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatMenuModule,
   ],
   exports: [
-    //BrowserModule,
     MatInputModule,
     MatSidenavModule,
     MatProgressSpinnerModule,

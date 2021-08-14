@@ -22,11 +22,7 @@ export class PostListComponent implements OnInit, OnDestroy {
 
   public postsExist: boolean;
 
-  private inputChangeSub: Subscription =
-    this.postService.inputChanged.subscribe((posts) => {
-      const postsObs = of(posts);
-      this.posts$ = postsObs.pipe();
-    });
+  private inputChangeSub: Subscription;
 
   onDelete(id: string) {
     this.store.dispatch(deletePost({ id }));
@@ -34,6 +30,10 @@ export class PostListComponent implements OnInit, OnDestroy {
 
   private reload() {
     this.posts$ = this.store.pipe(select(selectAllPosts));
+    this.inputChangeSub = this.postService.inputChanged.subscribe((posts) => {
+      const postsObs = of(posts);
+      this.posts$ = postsObs.pipe();
+    });
   }
 
   convertDate(inputDate) {
@@ -60,7 +60,8 @@ export class PostListComponent implements OnInit, OnDestroy {
     }
     return false;
   }
-  sortByDate(order) {
+
+  sortByDate(order: string) {
     this.posts$ = this.posts$.pipe(
       map((posts) => {
         return posts.sort((a, b) => {

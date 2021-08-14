@@ -10,7 +10,6 @@ import { actions, fetchPosts, postsFetched } from './actions';
 export class postsEffects {
   constructor(
     private actions$: Actions,
-    private http: HttpClient,
     private postService: PostService,
     private router: Router
   ) {}
@@ -22,7 +21,6 @@ export class postsEffects {
         return this.postService.getPosts();
       }),
       map((posts) => {
-        //this.router.navigate(['/']);
         return postsFetched({ posts });
       })
     );

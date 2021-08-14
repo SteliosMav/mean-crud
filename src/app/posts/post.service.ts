@@ -1,11 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
 
-import { Observable, Subject, Subscription } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { AppState } from './post-list/store/reducers';
+import { Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { Post } from './post.model';
 
@@ -13,7 +10,6 @@ import { Post } from './post.model';
 export class PostService {
   constructor(private http: HttpClient) {}
 
-  private posts: Post[] = [];
   private url: string = 'http://localhost:3000/api/posts/';
 
   private postsUpdated = new Subject<Post[]>();
@@ -37,12 +33,6 @@ export class PostService {
   getPost(id: string): Observable<{ message: string; post: Post }> {
     return this.http.get<{ message: string; post: Post }>(this.url + id);
   }
-
-  // *** Is the below type declaration redundant? ***
-  //
-  // getPost(id: string): Observable<{ message: string; post: Post }> {
-  //   return this.http.get<{ message: string; post: Post }>(this.url + id);
-  // }
 
   updatePost(post: Partial<Post>) {
     let postData: Post | FormData | Partial<Post>;

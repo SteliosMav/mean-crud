@@ -2,7 +2,6 @@ import { createReducer, on } from '@ngrx/store';
 import { actions } from './actions';
 import { Post } from '../../post.model';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
-import { state } from '@angular/animations';
 
 export interface AppState {
   posts: PostsState;
@@ -27,12 +26,6 @@ export const postReducer = createReducer(
   on(actions.addPost, (state, action) => {
     return { ...state, loading: true };
   }),
-  // on(actions.updatePost, (state, action) => {
-  //   return { ...state, loading: true };
-  // }),
-  // on(actions.fetchPosts, (state, action) => {
-  //   return { ...state, loading: true };
-  // }),
   on(actions.postsFetched, (state, action) => {
     return {
       ...adapter.setAll(action.posts, state),
